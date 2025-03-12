@@ -13,13 +13,6 @@ from llava.conversation import SeparatorStyle, conv_templates
 import torch
 from llava.conversation import SeparatorStyle, conv_templates
 
-# tokenizer, model, image_processor, context_len = load_pretrained_model(
-#     model_path='microsoft/llava-med-v1.5-mistral-7b',
-#     model_base=None,
-#     model_name='llava-med-v1.5-mistral-7b',
-#     device='cuda'
-# )
-
 
 def load_model(model_path, model_base, model_name):
     tokenizer, model, image_processor, context_len = load_pretrained_model(
@@ -35,15 +28,25 @@ def load_model(model_path, model_base, model_name):
     model.model.mm_projector.to(device="cuda", dtype=torch.float16)
     model.to(device="cuda", dtype=torch.float16)
     image_processor = vision_tower.image_processor
+    if hasattr(model.config, "max_sequence_length"):
+        context_len = model.config.max_sequence_length
+    else:
+        context_len = 2048
 
     return tokenizer, model, image_processor, context_len
 
 
 def load_base_model():
+    # tokenizer, model, image_processor, context_len = load_pretrained_model(
+    #     model_path='microsoft/llava-med-v1.5-mistral-7b',
+    #     model_base=None,
+    #     model_name='llava-med-v1.5-mistral-7b',
+    #     device='cuda'
+    # )
     return load_model(
-        model_path="",
-        model_base="microsoft/llava-med-v1.5-mistral-7b",
-        model_name="microsoft/llava-med-v1.5-mistral-7b",
+        model_path="microsoft/llava-med-v1.5-mistral-7b",
+        model_base=None,
+        model_name="llava-med-v1.5-mistral-7b",
     )
 
 
@@ -94,7 +97,7 @@ def get_prediction(model, tokenizer, image_processor, image_url: str, question: 
             top_p=None,
             num_beams=None,
             # no_repeat_ngram_size=3,
-            max_new_tokens=1024,
+            max_new_tokens=2048,
             use_cache=True,
         )
 
@@ -132,11 +135,11 @@ def validate(data_path, image_base_path, model, tokenizer, image_processor, outp
             }
         )
         print(
-            "study_id", study_id,
-            "prompt", question,
-            "image", image_url,
-            "ground_truth", ground_truth,
-            "prediction", prediction
+            "study_id", study_id, "\n"
+            "prompt", question, "\n"
+            "image", image_url, "\n"
+            "ground_truth", ground_truth, "\n"
+            "prediction", prediction, "\n"
         )
         
         count += 1
@@ -149,17 +152,19 @@ def validate(data_path, image_base_path, model, tokenizer, image_processor, outp
 
 
 # default settings trained on full dataset, with 4 bits quantization
-finetuned_tokenizer, finetuned_model, finetuned_image_processor, finetuned_context_len = load_model(
-    model_path='../checkpoints/train_5k_quantized_4-epoch-3-lr-2e5',
-    model_base='microsoft/llava-med-v1.5-mistral-7b',
-    model_name='train_5k_quantized_4-epoch-3-lr-2e5',
-)
+# finetuned_tokenizer, finetuned_model, finetuned_image_processor, finetuned_context_len = load_model(
+#     model_path='../checkpoints/llava-med-v1.5-mistral-7b-vision_tower-epoch-1-lr-0.0001',
+#     model_base=None,
+#     model_name='llava-med-v1.5-mistral-7b-vision_tower-epoch-1-lr-0.0001',
+# )
 
+finetuned_tokenizer, finetuned_model, finetuned_image_processor, finetuned_context_len = load_base_model()
+print("finetuned_context_len:", finetuned_context_len, "\n")
 validate(
-    data_path="/home/r11kaijun/MIMIC-CXR/processed_data/validate.json",
-    image_base_path="/home/r11kaijun/physionet.org/files/mimic-cxr-jpg/2.1.0",
+    data_path="/home/FYP/angk0064/Datasets/mimic-cxr/processed_data/validate.json",
+    image_base_path="/home/FYP/angk0064/Datasets/mimic-cxr-jpg/2.1.0",
     model=finetuned_model,
     tokenizer=finetuned_tokenizer,
     image_processor=finetuned_image_processor,
-    output_path="/home/r11kaijun/MIMIC-CXR/validation_results/train_5k_quantized_4-epoch-3-lr-2e5.json",
+    output_path="/home/FYP/angk0064/LLaVA-Med/validation-results/llava-med-v1.5-mistral-7b.json"
 )

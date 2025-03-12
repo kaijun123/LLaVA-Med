@@ -9,7 +9,7 @@
 ##############################################################
 llava_dir=$HOME/LLaVA
 llava_med_dir=$HOME/LLaVA-Med
-image_folder=$HOME/physionet.org/files/mimic-cxr-jpg/2.1.0/
+image_folder=$HOME/Datasets/mimic-cxr-jpg/2.1.0/
 model_base=$llava_med_dir/checkpoints/llava-med-v1.5-mistral-7b-vision_tower-epoch-1-lr-0.0001
 ##############################################################
 # changed params: bits (quantization), deepspeed config (zero2), conv mode (mistral_instruct)
@@ -17,7 +17,7 @@ version=mistral_instruct
 deepspeed_config=$llava_dir/scripts/zero2.json
 bits=4
 data_file=train_5k
-data_path=$HOME/MIMIC-CXR/processed_data/${data_file}.json
+data_path=$HOME/Datasets/mimic-cxr/processed_data/${data_file}.json
 epoch=6
 freeze_backbone=True
 tune_mm_mlp_adapter=True
