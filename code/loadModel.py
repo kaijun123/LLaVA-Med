@@ -108,7 +108,7 @@ def get_prediction(model, tokenizer, image_processor, image_url: str, question: 
 def validate(data_path, image_base_path, model, tokenizer, image_processor, output_path):
     list_data_dict = json.load(open(data_path))
     results = []
-    count = 0
+    # count = 0
 
     for data in list_data_dict:
         study_id = data["id"]
@@ -142,9 +142,9 @@ def validate(data_path, image_base_path, model, tokenizer, image_processor, outp
             "prediction", prediction, "\n"
         )
         
-        count += 1
-        if count == 20:
-            break
+        # count += 1
+        # if count == 20:
+        #     break
 
     file = open(output_path, mode="w")
     json.dump(results, file)
