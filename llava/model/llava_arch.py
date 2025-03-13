@@ -29,6 +29,7 @@ from llava.constants import IGNORE_INDEX, IMAGE_TOKEN_INDEX, DEFAULT_IMAGE_PATCH
 class LlavaMetaModel:
 
     def __init__(self, config):
+        print("llava-med LlavaMetaModel")
         super(LlavaMetaModel, self).__init__(config)
 
         if hasattr(config, "mm_vision_tower"):
