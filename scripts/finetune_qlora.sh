@@ -14,7 +14,7 @@ model_base=$llava_med_dir/checkpoints/llava-med-v1.5-mistral-7b-vision_tower-epo
 ##############################################################
 # changed params: bits (quantization), deepspeed config (zero2), conv mode (mistral_instruct)
 version=mistral_instruct
-deepspeed_config=$llava_dir/scripts/zero2.json
+deepspeed_config=$llava_med_dir/scripts/zero2.json
 bits=4
 data_file=train_5k
 data_path=$HOME/Datasets/mimic-cxr/processed_data/${data_file}.json
@@ -26,7 +26,7 @@ output_dir=$llava_med_dir/checkpoints/llava-med-v1.5-mistral-7b-vision_tower-epo
 
 
 # add llava directory path to PYTHONPATH so that it can be imported
-export PYTHONPATH=$llava_dir:$PYTHONPATH
+export PYTHONPATH=$llava_med_dir:$PYTHONPATH
 # set the max memory size to prevent memory fragmentation
 export 'PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:256'
 
