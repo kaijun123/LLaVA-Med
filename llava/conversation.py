@@ -405,7 +405,7 @@ conv_llava_v1_mmtag = Conversation(
 )
 
 conv_mistral_instruct = Conversation(
-    system="",
+    system="You are a helpful radiology assistant. You are being provided with an image and a question, answer the given question.",
     roles=("USER", "ASSISTANT"),
     version="llama_v2",
     messages=(),
