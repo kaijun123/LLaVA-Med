@@ -8,6 +8,7 @@ from transformers import CLIPVisionModel, CLIPImageProcessor, CLIPVisionConfig
 
 class CLIPVisionTower(nn.Module):
     def __init__(self, vision_tower, args, delay_load=False):
+        print("llava-med CLIPVisionTower")
         super().__init__()
         self.vision_tower_name = vision_tower
         self.vision_tower_path = getattr(args, "vision_tower_path", "")
