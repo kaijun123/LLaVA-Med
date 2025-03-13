@@ -18,15 +18,16 @@ deepspeed_config=$llava_dir/scripts/zero2.json
 bits=4
 data_file=train_5k
 data_path=$HOME/MIMIC-CXR/processed_data/${data_file}.json
-epoch=6
+epoch=1
+lr=2e-5
 freeze_backbone=True
 tune_mm_mlp_adapter=True
-output_dir=$llava_med_dir/checkpoints/llava-med-v1.5-mistral-7b-vision_tower-epoch-1-lr-0.0001-${data_file}-train-mlp-quantized-${bits}-epoch-${epoch}
+output_dir=$llava_med_dir/checkpoints/llava-med-v1.5-mistral-7b-vision_tower-epoch-1-lr-0.0001-${data_file}-train-mlp-quantized-${bits}-epoch-${epoch}-lr-${lr}
 ##############################################################
 
 
 # add llava directory path to PYTHONPATH so that it can be imported
-export PYTHONPATH=$llava_dir:$PYTHONPATH
+export PYTHONPATH=$llava_med_dir:$PYTHONPATH
 # set the max memory size to prevent memory fragmentation
 export 'PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:256'
 
@@ -62,7 +63,7 @@ deepspeed $llava_med_dir/llava/train/train.py \
     --save_strategy "steps" \
     --save_steps 50000 \
     --save_total_limit 1 \
-    --learning_rate 2e-4 \
+    --learning_rate $lr \
     --weight_decay 0. \
     --warmup_ratio 0.03 \
     --lr_scheduler_type "cosine" \
