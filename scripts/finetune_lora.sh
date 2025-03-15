@@ -14,16 +14,13 @@ model_base=$llava_med_dir/checkpoints/llava-med-v1.5-mistral-7b-vision_tower-epo
 vision_tower_path=$llava_med_dir/checkpoints/vision_tower-epoch-1-lr-0.0001
 image_processor_path=$llava_med_dir/checkpoints/vision_tower-epoch-1-lr-0.0001
 ##############################################################
-# changed params: bits (quantization), deepspeed config (zero2), conv mode (mistral_instruct)
 version=mistral_instruct
 deepspeed_config=$llava_med_dir/scripts/zero2.json
-data_file=train_5k_custom
+data_file=train_28k_custom
 data_path=$HOME/Datasets/mimic-cxr/processed_data/${data_file}.json
 epoch=1
-freeze_backbone=True
-tune_mm_mlp_adapter=True
-lr=6e-5
-output_dir=$llava_med_dir/checkpoints/llava-med-v1.5-mistral-7b-vision_tower-epoch-1-lr-0.0001-${data_file}-train-mlp-unquantized-epoch-${epoch}-lr-${lr}
+lr=3e-5
+output_dir=$llava_med_dir/checkpoints/llava-med-v1.5-mistral-7b-vision_tower-epoch-1-lr-0.0001-v2-${data_file}-train-mlp-and-llm-unquantized-epoch-${epoch}-lr-${lr}
 ##############################################################
 
 
@@ -35,9 +32,8 @@ export 'PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:256'
 echo "starting the training"
 echo "start time:$(date)"
 
+# changed params: bits (quantization), deepspeed config (zero2), conv mode (mistral_instruct)
 deepspeed $llava_med_dir/llava/train/train.py \
-    --freeze_backbone $freeze_backbone \
-    --tune_mm_mlp_adapter $tune_mm_mlp_adapter \
     --lora_enable True --lora_r 128 --lora_alpha 256 --mm_projector_lr 2e-5 \
     --deepspeed $deepspeed_config \
     --model_name_or_path $model_base \

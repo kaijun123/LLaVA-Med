@@ -26,7 +26,9 @@ class LlavaMistralModel(LlavaMetaModel, MistralModel):
 class LlavaMistralForCausalLM(MistralForCausalLM, LlavaMetaForCausalLM):
     config_class = LlavaMistralConfig
 
-    def __init__(self, config):
+    def __init__(self, config, vision_tower_path, image_processor_path):
+        setattr(config, "vision_tower_path", vision_tower_path)
+        setattr(config, "image_processor_path", image_processor_path)
         super(MistralForCausalLM, self).__init__(config)
         self.model = LlavaMistralModel(config)
 

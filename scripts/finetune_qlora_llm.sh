@@ -10,18 +10,19 @@
 llava_dir=$HOME/LLaVA
 llava_med_dir=$HOME/LLaVA-Med
 image_folder=$HOME/Datasets/mimic-cxr-jpg/2.1.0/
-model_base=$llava_med_dir/checkpoints/llava-med-v1.5-mistral-7b-vision_tower-epoch-1-lr-0.0001
+model_base=$llava_med_dir/checkpoints/llava-med-v1.5-mistral-7b-vision_tower-epoch-1-lr-0.0001-v2
+vision_tower_path=$llava_med_dir/checkpoints/vision_tower-epoch-1-lr-0.0001
+image_processor_path=$llava_med_dir/checkpoints/vision_tower-epoch-1-lr-0.0001
 ##############################################################
 # changed params: bits (quantization), deepspeed config (zero2), conv mode (mistral_instruct)
 version=mistral_instruct
 deepspeed_config=$llava_med_dir/scripts/zero2.json
 bits=4
-data_file=train_5k
+data_file=train_5k_custom
 data_path=$HOME/Datasets/mimic-cxr/processed_data/${data_file}.json
-epoch=6
-freeze_backbone=True
-tune_mm_mlp_adapter=True
-output_dir=$llava_med_dir/checkpoints/llava-med-v1.5-mistral-7b-vision_tower-epoch-1-lr-0.0001-${data_file}-train-mlp-and-llm-quantized-${bits}-epoch-${epoch}
+epoch=1
+lr=2e-5
+output_dir=$llava_med_dir/checkpoints/llava-med-v1.5-mistral-7b-vision_tower-epoch-1-lr-0.0001-v2-${data_file}-train-mlp-and-llm-quantized-${bits}-epoch-${epoch}-lr-${lr}
 ##############################################################
 
 
@@ -43,8 +44,8 @@ deepspeed $llava_med_dir/llava/train/train.py \
     --data_path $data_path \
     --image_folder $image_folder \
     --vision_tower $model_base \
-    --vision_tower_path $model_base \
-    --image_processor_path $model_base \
+    --vision_tower_path $vision_tower_path \
+    --image_processor_path $image_processor_path \
     --mm_projector_type mlp2x_gelu \
     --mm_vision_select_layer -2 \
     --mm_use_im_start_end False \
@@ -61,7 +62,7 @@ deepspeed $llava_med_dir/llava/train/train.py \
     --save_strategy "steps" \
     --save_steps 50000 \
     --save_total_limit 1 \
-    --learning_rate 2e-4 \
+    --learning_rate $lr \
     --weight_decay 0. \
     --warmup_ratio 0.03 \
     --lr_scheduler_type "cosine" \

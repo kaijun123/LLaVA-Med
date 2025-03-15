@@ -30,5 +30,4 @@ SBATCH --error=error_%x_%j.err
 ### Your script for computation ###
 module load anaconda
 source activate llava
-echo "starting the training"
-sh finetune_qlora.sh
+sh finetune_qlora_llm.sh

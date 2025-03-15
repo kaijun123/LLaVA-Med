@@ -13,6 +13,9 @@ class CLIPVisionTower(nn.Module):
         self.vision_tower_name = vision_tower
         self.vision_tower_path = getattr(args, "vision_tower_path", "")
         self.image_processor_path = getattr(args, "image_processor_path", "")
+        print("self.vision_tower_name:", self.vision_tower_name)
+        print("self.vision_tower_path:", self.vision_tower_path)
+        print("self.image_processor_path:", self.image_processor_path)
 
         self.select_layer = getattr(args, "mm_vision_select_layer", -2)
         print("self.select_layer:", self.select_layer)
@@ -30,6 +33,7 @@ class CLIPVisionTower(nn.Module):
             # print("self.cfg_only:", self.cfg_only)
 
     def load_model(self):
+        # print("calling CLIPVisionTower.load_model()")
         if self.is_loaded:
             print("{} is already loaded, `load_model` called again, skipping.".format(self.vision_tower_name))
             return
@@ -54,6 +58,8 @@ class CLIPVisionTower(nn.Module):
             image_features = image_features[:, 1:]
         elif self.select_feature == 'cls_patch':
             image_features = image_features
+        elif self.select_feature == 'cls':
+            image_features = image_features[:, 0]
         else:
             raise ValueError(f'Unexpected select feature: {self.select_feature}')
         return image_features
