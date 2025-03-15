@@ -27,13 +27,25 @@ def configure_vision_tower(model_path, model_base, model_name, model_args, save_
     )
     print("loading model")
     print("model:", model)
+    # print("state dict:", model.state_dict().keys())
 
     print("loading vision_tower")
     custom_vision_tower = build_vision_tower(model_args)
     print("custom_vision_tower:", custom_vision_tower)
 
     model.model.vision_tower = custom_vision_tower
-    print("model:", model)
+    # print("model:", model)
+    # print("state dict:", model.state_dict().keys())
+
+    # for name, param in custom_vision_tower.named_parameters():
+    #     if "vision_tower" in name:
+    #       print(name, param)
+    #       break
+
+    # for name, param in model.named_parameters():
+    #     if "vision_tower" in name:
+    #       print(name, param)
+    #       break
 
     model.save_pretrained(save_model_path)
     tokenizer.save_pretrained(save_model_path)
@@ -60,13 +72,13 @@ if __name__ == "__main__":
         vision_tower_path: Optional[str] = field(default="")
         image_processor_path: Optional[str] = field(default="")
 
-    vision_tower_path = "/home/r11kaijun/LLaVA/llava/model/multimodal_encoder/vision_tower-epoch-1-lr-0.0001"
-    image_processor_path = "/home/r11kaijun/LLaVA/llava/model/multimodal_encoder/vision_tower-epoch-1-lr-0.0001"
+    vision_tower_path = "/home/r11kaijun/LLaVA-Med/checkpoints/vision_tower-epoch-1-lr-0.0001"
+    image_processor_path = "/home/r11kaijun/LLaVA-Med/checkpoints/vision_tower-epoch-1-lr-0.0001"
 
     configure_vision_tower(
         model_path="microsoft/llava-med-v1.5-mistral-7b",
         model_base="microsoft/llava-med-v1.5-mistral-7b",
         model_name="microsoft/llava-med-v1.5-mistral-7b",
         model_args=ModelArguments(vision_tower_path=vision_tower_path, image_processor_path=image_processor_path),
-        save_model_path="/home/r11kaijun/LLaVA-Med/checkpoints/llava-med-v1.5-mistral-7b-vision_tower-epoch-1-lr-0.0001",
+        save_model_path="/home/r11kaijun/LLaVA-Med/checkpoints/llava-med-v1.5-mistral-7b-vision_tower-epoch-1-lr-0.0001-v2",
     )

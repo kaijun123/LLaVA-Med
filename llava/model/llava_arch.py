@@ -114,6 +114,7 @@ class LlavaMetaForCausalLM(ABC):
         pass
 
     def get_vision_tower(self):
+        # print("calling get_vision_tower()")
         return self.get_model().get_vision_tower()
 
     def encode_images(self, images):

@@ -4,7 +4,7 @@ import json
 import os
 from llava.constants import DEFAULT_IMAGE_TOKEN, IMAGE_TOKEN_INDEX, DEFAULT_IM_START_TOKEN, DEFAULT_IM_END_TOKEN
 from llava.mm_utils import (
-    KeywordsStoppingCriteria,
+    # KeywordsStoppingCriteria,
     # get_model_name_from_path,
     process_images,
     tokenizer_image_token,
@@ -12,13 +12,6 @@ from llava.mm_utils import (
 from llava.conversation import SeparatorStyle, conv_templates
 import torch
 from llava.conversation import SeparatorStyle, conv_templates
-
-# tokenizer, model, image_processor, context_len = load_pretrained_model(
-#     model_path='microsoft/llava-med-v1.5-mistral-7b',
-#     model_base=None,
-#     model_name='llava-med-v1.5-mistral-7b',
-#     device='cuda'
-# )
 
 
 def load_model(model_path, model_base, model_name):
@@ -40,10 +33,16 @@ def load_model(model_path, model_base, model_name):
 
 
 def load_base_model():
+    # tokenizer, model, image_processor, context_len = load_pretrained_model(
+    #     model_path='microsoft/llava-med-v1.5-mistral-7b',
+    #     model_base=None,
+    #     model_name='llava-med-v1.5-mistral-7b',
+    #     device='cuda'
+    # )
     return load_model(
-        model_path="",
-        model_base="microsoft/llava-med-v1.5-mistral-7b",
-        model_name="microsoft/llava-med-v1.5-mistral-7b",
+        model_path="microsoft/llava-med-v1.5-mistral-7b",
+        model_base=None,
+        model_name="llava-med-v1.5-mistral-7b",
     )
 
 
@@ -94,7 +93,7 @@ def get_prediction(model, tokenizer, image_processor, image_url: str, question: 
             top_p=None,
             num_beams=None,
             # no_repeat_ngram_size=3,
-            max_new_tokens=1024,
+            max_new_tokens=2048,
             use_cache=True,
         )
 
@@ -148,18 +147,23 @@ def validate(data_path, image_base_path, model, tokenizer, image_processor, outp
     file.close()
 
 
-# default settings trained on full dataset, with 4 bits quantization
-finetuned_tokenizer, finetuned_model, finetuned_image_processor, finetuned_context_len = load_model(
-    model_path='../checkpoints/train_5k_quantized_4-epoch-3-lr-2e5',
-    model_base='microsoft/llava-med-v1.5-mistral-7b',
-    model_name='train_5k_quantized_4-epoch-3-lr-2e5',
-)
+# # default settings trained on full dataset, with 4 bits quantization
+# finetuned_tokenizer, finetuned_model, finetuned_image_processor, finetuned_context_len = load_model(
+#     model_path='../checkpoints/train_5k_quantized_4-epoch-3-lr-2e5',
+#     model_base='microsoft/llava-med-v1.5-mistral-7b',
+#     model_name='train_5k_quantized_4-epoch-3-lr-2e5',
+# )
 
-validate(
-    data_path="/home/r11kaijun/MIMIC-CXR/processed_data/validate.json",
-    image_base_path="/home/r11kaijun/physionet.org/files/mimic-cxr-jpg/2.1.0",
-    model=finetuned_model,
-    tokenizer=finetuned_tokenizer,
-    image_processor=finetuned_image_processor,
-    output_path="/home/r11kaijun/MIMIC-CXR/validation_results/train_5k_quantized_4-epoch-3-lr-2e5.json",
-)
+# validate(
+#     data_path="/home/r11kaijun/MIMIC-CXR/processed_data/validate.json",
+#     image_base_path="/home/r11kaijun/physionet.org/files/mimic-cxr-jpg/2.1.0",
+#     model=finetuned_model,
+#     tokenizer=finetuned_tokenizer,
+#     image_processor=finetuned_image_processor,
+#     output_path="/home/r11kaijun/MIMIC-CXR/validation_results/train_5k_quantized_4-epoch-3-lr-2e5.json",
+# )
+
+
+# prompt, conv = create_prompt("<image>\nQuestion: Please write a radiology report that explains this chest X-ray image.")
+# print("prompt:", prompt)
+# print("conv:", conv)
