@@ -20,6 +20,7 @@ class CLIPVisionTower(nn.Module):
         self.select_layer = getattr(args, "mm_vision_select_layer", -2)
         print("self.select_layer:", self.select_layer)
         self.select_feature = getattr(args, "mm_vision_select_feature", "patch")
+        # "cls_patch"
         print("self.select_feature:", self.select_feature)
         self.image_aspect_ratio = getattr(args, "image_aspect_ratio", "pad")
         self.is_loaded = False

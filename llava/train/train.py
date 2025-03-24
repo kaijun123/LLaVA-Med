@@ -63,9 +63,9 @@ class ModelArguments:
     mm_use_im_start_end: bool = field(default=False)
     mm_use_im_patch_token: bool = field(default=True)
     mm_patch_merge_type: Optional[str] = field(default='flat')
-    mm_vision_select_feature: Optional[str] = field(default="patch")
-    vision_tower_path: Optional[str] = field(default="/home/r11kaijun/LLaVA-Med/checkpoints/vision_tower-epoch-1-lr-0.0001")
-    image_processor_path: Optional[str] = field(default="/home/r11kaijun/LLaVA-Med/checkpoints/vision_tower-epoch-1-lr-0.0001")
+    mm_vision_select_feature: Optional[str] = field(default="cls_patch")
+    vision_tower_path: Optional[str] = field(default="/home/FYP/angk0064/ANGK0064/checkpoints/vision_tower-epoch-1-lr-0.0001")
+    image_processor_path: Optional[str] = field(default="/home/FYP/angk0064/ANGK0064/checkpoints/vision_tower-epoch-1-lr-0.0001")
     
     # default configs obtained from llava-med-v1.5-mistral-7b-vision_tower-epoch-1-lr-0.0001-v2/config.json
     feature_outs: str = "encoder+decoder"

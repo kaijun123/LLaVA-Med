@@ -21,9 +21,11 @@ def configure_vision_tower(model_path, model_base, model_name, model_args, save_
     """
     Load the model from a checkpoint. Swap out the vision_tower with other weights and then save the weights
     """
+
+    vision_tower_path, image_processor_path = model_args.vision_tower_path, model_args.image_processor_path
     model_name = get_model_name_from_path(model_path)
     tokenizer, model, image_processor, context_len = load_pretrained_model(
-        model_path, model_base, model_name, device_map='cpu'
+        model_path, model_base, model_name, vision_tower_path, image_processor_path, device_map='cpu'
     )
     print("loading model")
     print("model:", model)
@@ -37,15 +39,15 @@ def configure_vision_tower(model_path, model_base, model_name, model_args, save_
     # print("model:", model)
     # print("state dict:", model.state_dict().keys())
 
-    # for name, param in custom_vision_tower.named_parameters():
-    #     if "vision_tower" in name:
-    #       print(name, param)
-    #       break
+    for name, param in custom_vision_tower.named_parameters():
+        if "vision_tower" in name:
+          print(name, param)
+          break
 
-    # for name, param in model.named_parameters():
-    #     if "vision_tower" in name:
-    #       print(name, param)
-    #       break
+    for name, param in model.named_parameters():
+        if "vision_tower" in name:
+          print(name, param)
+          break
 
     model.save_pretrained(save_model_path)
     tokenizer.save_pretrained(save_model_path)
@@ -72,13 +74,14 @@ if __name__ == "__main__":
         vision_tower_path: Optional[str] = field(default="")
         image_processor_path: Optional[str] = field(default="")
 
-    vision_tower_path = "/home/FYP/angk0064/LLaVA-Med/checkpoints/vision_tower-epoch-1-lr-0.0001"
-    image_processor_path = "/home/FYP/angk0064/LLaVA-Med/checkpoints/vision_tower-epoch-1-lr-0.0001"
+    vision_tower_path = "/home/FYP/angk0064/ANGK0064/checkpoints/vision_tower-epoch-1-lr-0.0001"
+    image_processor_path = "/home/FYP/angk0064/ANGK0064/checkpoints/vision_tower-epoch-1-lr-0.0001"
 
+    # microsoft/llava-med-v1.5-mistral-7b
     configure_vision_tower(
-        model_path="microsoft/llava-med-v1.5-mistral-7b",
-        model_base="microsoft/llava-med-v1.5-mistral-7b",
-        model_name="microsoft/llava-med-v1.5-mistral-7b",
+        model_path="liuhaotian/llava-v1.5-7b-lora",
+        model_base="liuhaotian/llava-v1.5-7b-lora",
+        model_name="liuhaotian/llava-v1.5-7b-lora",
         model_args=ModelArguments(vision_tower_path=vision_tower_path, image_processor_path=image_processor_path),
-        save_model_path="/home/FYP/angk0064/LLaVA-Med/checkpoints/llava-med-v1.5-mistral-7b-vision_tower-epoch-1-lr-0.0001-v2",
+        save_model_path="/home/FYP/angk0064/ANGK0064/checkpoints/llava-med-v1.5-mistral-7b-vision_tower-epoch-1-lr-0.0001-v2",
     )

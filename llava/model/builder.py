@@ -24,7 +24,7 @@ def load_pretrained_model(model_path, model_base, model_name, vision_tower_path,
     else:
         kwargs['torch_dtype'] = torch.float16
 
-    if 'llava' in model_name.lower() and 'mistral' in model_name.lower():
+    if 'llava' in model_name.lower():
         if model_base is None:
             tokenizer = AutoTokenizer.from_pretrained(model_path)
             model = LlavaMistralForCausalLM.from_pretrained(
