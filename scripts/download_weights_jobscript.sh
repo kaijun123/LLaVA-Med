@@ -30,4 +30,6 @@ SBATCH --error=error_%x_%j.err
 ### Your script for computation ###
 module load anaconda
 source activate llava-med
-sh download_weights.sh > output.out 2>&1 &
+llava_med_dir=$HOME/LLaVA-Med
+export PYTHONPATH=$llava_med_dir:$PYTHONPATH
+sh download_weights.sh

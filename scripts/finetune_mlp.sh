@@ -1,20 +1,19 @@
 #!/bin/bash
 
-# NOTE: this bash script is running llava code using llava-med weights, and our own dataset
 # ALWAYS MAKE SURE TO CHANGE TO THE RIGHT CONDA ENV before running this script
-# conda activate llava
+# conda activate llava-med
 
 # edited based on LLaVA/scripts/v1_5/finetune_task_lora.sh and LLaVA/scripts/finetune_qlora.sh
+# Aim: Finetune the MLP after quantizing the model
 
 ##############################################################
-llava_dir=$HOME/LLaVA
 llava_med_dir=$HOME/LLaVA-Med
 image_folder=$HOME/Datasets/mimic-cxr-jpg/2.1.0/
 model_base=$llava_med_dir/checkpoints/llava-med-v1.5-mistral-7b-vision_tower-epoch-1-lr-0.0001-v2
+model_name=llava-med-v1.5-mistral-7b-vision_tower-epoch-1-lr-0.0001-v2
 vision_tower_path=$llava_med_dir/checkpoints/vision_tower-epoch-1-lr-0.0001
 image_processor_path=$llava_med_dir/checkpoints/vision_tower-epoch-1-lr-0.0001
 ##############################################################
-# changed params: bits (quantization), deepspeed config (zero2), conv mode (mistral_instruct)
 version=mistral_instruct
 deepspeed_config=$llava_med_dir/scripts/zero2.json
 data_file=train_5k_custom
@@ -23,7 +22,7 @@ epoch=1
 freeze_backbone=True
 tune_mm_mlp_adapter=True
 lr=6e-5
-output_dir=$llava_med_dir/checkpoints/llava-med-v1.5-mistral-7b-vision_tower-epoch-1-lr-0.0001-${data_file}-train-mlp-unquantized-epoch-${epoch}-lr-${lr}
+output_dir=$llava_med_dir/checkpoints/lora-${model_name}-${data_file}-train-mlp-unquantized-epoch-${epoch}-lr-${lr}
 ##############################################################
 
 

@@ -30,4 +30,6 @@ SBATCH --error=error_%x_%j.err
 ### Your script for computation ###
 module load anaconda
 source activate llava-med
-python /home/FYP/angk0064/LLaVA-Med/code/loadModel.py
+llava_med_dir=$HOME/LLaVA-Med
+export PYTHONPATH=$llava_med_dir:$PYTHONPATH
+python -u ../code/validate.py

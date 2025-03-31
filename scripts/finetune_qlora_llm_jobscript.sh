@@ -29,5 +29,7 @@ SBATCH --error=error_%x_%j.err
 
 ### Your script for computation ###
 module load anaconda
-source activate llava
+source activate llava-med
+llava_med_dir=$HOME/LLaVA-Med
+export PYTHONPATH=$llava_med_dir:$PYTHONPATH
 sh finetune_qlora_llm.sh

@@ -1,25 +1,14 @@
-import argparse
 from llava.model.builder import load_pretrained_model
 from llava.mm_utils import get_model_name_from_path
 from llava.model.multimodal_encoder.builder import build_vision_tower
 
 
-def merge_weights(model_path, model_base, model_name, save_model_path):
-    """
-    Combine the base model's weights and the LoRA weights, and save the weights
-    """
-    model_name = get_model_name_from_path(model_path)
-    tokenizer, model, image_processor, context_len = load_pretrained_model(
-        model_path, model_base, model_name, device_map='cpu'
-    )
-
-    model.save_pretrained(save_model_path)
-    tokenizer.save_pretrained(save_model_path)
-
-
 def configure_vision_tower(model_path, model_base, model_name, model_args, save_model_path):
     """
-    Load the model from a checkpoint. Swap out the vision_tower with other weights and then save the weights
+    Load the model from a checkpoint. Replace the vision_tower with another vision_tower and then save the weights
+
+    If replacing the vision tower in a pretrained model: model_base = None, model_path = path to pretrained model
+    If replacing the vision tower in finetuned model, model_base = path to pretrained model, model_path = path to LoRA weights
     """
 
     vision_tower_path, image_processor_path = model_args.vision_tower_path, model_args.image_processor_path
@@ -29,25 +18,24 @@ def configure_vision_tower(model_path, model_base, model_name, model_args, save_
     )
     print("loading model")
     print("model:", model)
-    # print("state dict:", model.state_dict().keys())
 
     print("loading vision_tower")
     custom_vision_tower = build_vision_tower(model_args)
     print("custom_vision_tower:", custom_vision_tower)
 
+    # replace the vision_tower in the pretrained model with our own custom finetuned vision_towere
     model.model.vision_tower = custom_vision_tower
-    # print("model:", model)
-    # print("state dict:", model.state_dict().keys())
 
-    for name, param in custom_vision_tower.named_parameters():
-        if "vision_tower" in name:
-          print(name, param)
-          break
+    # additional code added just to make sure that the replacement of the vision_tower is correct
+    # for name, param in custom_vision_tower.named_parameters():
+    #     if "vision_tower" in name:
+    #       print(name, param)
+    #       break
 
-    for name, param in model.named_parameters():
-        if "vision_tower" in name:
-          print(name, param)
-          break
+    # for name, param in model.named_parameters():
+    #     if "vision_tower" in name:
+    #       print(name, param)
+    #       break
 
     model.save_pretrained(save_model_path)
     tokenizer.save_pretrained(save_model_path)
@@ -79,9 +67,9 @@ if __name__ == "__main__":
 
     # microsoft/llava-med-v1.5-mistral-7b
     configure_vision_tower(
-        model_path="liuhaotian/llava-v1.5-7b-lora",
-        model_base="liuhaotian/llava-v1.5-7b-lora",
-        model_name="liuhaotian/llava-v1.5-7b-lora",
+        model_path="microsoft/llava-med-v1.5-mistral-7b",
+        model_base=None,
+        model_name="llava-med-v1.5-mistral-7b",
         model_args=ModelArguments(vision_tower_path=vision_tower_path, image_processor_path=image_processor_path),
         save_model_path="/home/FYP/angk0064/ANGK0064/checkpoints/llava-med-v1.5-mistral-7b-vision_tower-epoch-1-lr-0.0001-v2",
     )

@@ -32,4 +32,4 @@ module load anaconda
 source activate llava-med
 llava_med_dir=$HOME/LLaVA-Med
 export PYTHONPATH=$llava_med_dir:$PYTHONPATH
-sh finetune_mlp.sh
+sh finetune_qlora_mlp.sh
